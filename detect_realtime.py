@@ -22,27 +22,26 @@ def transPos(trans_mat, target_pos):
     return target_pos_trans[:2]
 
 
-width = 1000
-height = 1000
+cap = cv2.VideoCapture(0)
 
+width = 220
+height = 280
 true_coordinates = np.float32(
     [[0., 0.], [width, 0.], [0., height], [width, height]])  # 現実の座標
-
-
-cap = cv2.VideoCapture(0)
 
 x_t = []
 y_t = []
 fig = plt.figure()
 
-while cap.isOpened():
+while True:
     ret, frame = cap.read()
-    print(type(frame))
+    # print(ret)
     # マーカー検出
     corners, ids, rejectedImgPoints = aruco.detectMarkers(frame, dictionary)
     img_marked = aruco.drawDetectedMarkers(frame, corners, ids)
+    cv2.imwrite('test.png', img_marked)
 
-    if ids.size == 5 and all(ids <= 5):
+    if ids.all() is not None and ids.size == 5 and all(ids <= 5):
         moments = calcMoments(corners, ids)
         marker_coordinates = np.float32(moments[:4])
         trans_mat = cv2.getPerspectiveTransform(
