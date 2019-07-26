@@ -19,7 +19,7 @@ def calcMoments(corners, ids):
 
 def transPos(trans_mat, target_pos):
     target_pos = np.append(target_pos, 1)
-    target_pos_trans = trans_mat@target_pos
+    target_pos_trans = trans_mat @ target_pos  # 内積
     target_pos_trans = target_pos_trans / target_pos_trans[2]
     return target_pos_trans[:2]
 
@@ -32,29 +32,29 @@ fourcc = cv2.VideoWriter_fourcc(*'XVID')
 rec = cv2.VideoWriter(NEW_FILE_NAME, fourcc, 20.0, (width, height))
 cv2.namedWindow(WINDOW_NAME)
 
-
+# 1フレーム目を検出
 dictionary = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
-corners, ids, rejectedImgPoints = aruco.detectMarkers(original_img, dictionary)
-img_marked = aruco.drawDetectedMarkers(original_img, corners, ids)
-cv2.imwrite('results/detect.png', img_marked)
-print(all(ids > 5))
+# corners, ids, rejectedImgPoints = aruco.detectMarkers(original_img, dictionary)
+# img_marked = aruco.drawDetectedMarkers(original_img, corners, ids)
+# cv2.imwrite('results/detect.png', img_marked)
+# print(all(ids > 5))
 
 
-while True:
-    corners, ids, rejectedImgPoints = aruco.detectMarkers(
-        original_img, dictionary)
-    if ids.all() is not None and ids.size > 4:
-        break
-    end_flag, original_img = org.read()
-moments = calcMoments(corners, ids)
+# while True:
+#     corners, ids, rejectedImgPoints = aruco.detectMarkers(
+#         original_img, dictionary)
+#     if ids.all() is not None and ids.size > 4:
+#         break
+#     end_flag, original_img = org.read()
+# moments = calcMoments(corners, ids)
 
-# 座標変換
-marker_coordinates = np.float32(moments[:4])
+# # 座標変換
+# marker_coordinates = np.float32(moments[:4])
 true_coordinates = np.float32(
     [[0., 0.], [width, 0.], [0., height], [width, height]])
-trans_mat = cv2.getPerspectiveTransform(marker_coordinates, true_coordinates)
-img_trans = cv2.warpPerspective(original_img, trans_mat, (width, height))
-cv2.imwrite('results/trans.png', img_trans)
+# trans_mat = cv2.getPerspectiveTransform(marker_coordinates, true_coordinates)
+# img_trans = cv2.warpPerspective(original_img, trans_mat, (width, height))
+# cv2.imwrite('results/trans.png', img_trans)
 
 
 x_t = []
