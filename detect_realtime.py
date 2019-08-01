@@ -24,15 +24,15 @@ def transPos(trans_mat, target_pos):
 
 cap = cv2.VideoCapture(0)
 
-width = 1000
-height = 1000
+width = 158
+height = 227
+# 実際の座標を決める
 true_coordinates = np.float32(
-    [[0., 0.], [width, 0.], [0., height], [width, height]])  # 現実の座標
+    [[0., 0.], [width, 0.], [0., height], [width, height]])  # id=1,2,3,4の座標
 
 x_t = []
 y_t = []
 fig = plt.figure()
-
 while True:
     ret, frame = cap.read()
     # print(ret)
@@ -41,8 +41,9 @@ while True:
     img_marked = aruco.drawDetectedMarkers(frame, corners, ids)
     cv2.imwrite('results/test.png', img_marked)
 
-    if ids is None:
-        cv2.imshow('window', img_marked)
+    # マーカーが映っていないとき
+    if ids is None or ids.size < 5:
+        cv2.imshow('window', frame)
         continue
 
     if ids.all() is not None and ids.size == 5 and all(ids <= 5):
@@ -66,11 +67,11 @@ while True:
             frame, trans_mat, (width, height))
 
     # 表示
-    cv2.imshow('window', img_trans)
+    cv2.imshow('window', img_tran)
     plt.scatter(x_t, y_t)
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.savefig("results/tragectory.png", dpi=300)
+    plt.savefig("results/tragectory.png")
 
     # quit
     if cv2.waitKey(1) & 0xFF == ord('q'):
