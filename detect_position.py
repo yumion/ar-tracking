@@ -29,7 +29,7 @@ end_flag, original_img = org.read()
 width = 1000
 height = 1000
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-rec = cv2.VideoWriter(NEW_FILE_NAME, fourcc, 20.0, (width, height))
+rec = cv2.VideoWriter(NEW_FILE_NAME, fourcc, 60.0, (width, height))
 cv2.namedWindow(WINDOW_NAME)
 
 # 1フレーム目を検出

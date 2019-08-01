@@ -24,8 +24,8 @@ def transPos(trans_mat, target_pos):
 
 cap = cv2.VideoCapture(0)
 
-width = 220
-height = 280
+width = 1000
+height = 1000
 true_coordinates = np.float32(
     [[0., 0.], [width, 0.], [0., height], [width, height]])  # 現実の座標
 
@@ -39,15 +39,19 @@ while True:
     # マーカー検出
     corners, ids, rejectedImgPoints = aruco.detectMarkers(frame, dictionary)
     img_marked = aruco.drawDetectedMarkers(frame, corners, ids)
-    cv2.imwrite('test.png', img_marked)
+    cv2.imwrite('results/test.png', img_marked)
+
+    if ids is None:
+        cv2.imshow('window', img_marked)
+        continue
 
     if ids.all() is not None and ids.size == 5 and all(ids <= 5):
         moments = calcMoments(corners, ids)
-        marker_coordinates = np.float32(moments[:4])
+        marker_coordinates = np.float32(moments[:4])  # 四隅
         trans_mat = cv2.getPerspectiveTransform(
             marker_coordinates, true_coordinates)
 
-        target_pos = moments[4]
+        target_pos = moments[4]  # 動くマーカー
         trans_pos = transPos(trans_mat, target_pos)
 
         x_t.append(trans_pos[0])
@@ -76,7 +80,7 @@ plt.scatter(x_t, y_t)
 plt.xlabel('x')
 plt.ylabel('y')
 plt.savefig("results/tragectory.png", dpi=300)
-plt.show()
+# plt.show()
 
 cap.release()
 cv2.destroyAllWindows()
