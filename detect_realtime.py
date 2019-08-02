@@ -24,15 +24,21 @@ def transPos(trans_mat, target_pos):
 
 cap = cv2.VideoCapture(0)
 
-width = 158
-height = 227
+width = 235
+height = 370
 # 実際の座標を決める
 true_coordinates = np.float32(
     [[0., 0.], [width, 0.], [0., height], [width, height]])  # id=1,2,3,4の座標
 
+# 動画を保存
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+rec = cv2.VideoWriter('results/trajectory.mp4', fourcc, 60.0, (width, height))
+
+# 軌道plotデータ
 x_t = []
 y_t = []
 fig = plt.figure()
+
 while True:
     ret, frame = cap.read()
     # print(ret)
@@ -67,7 +73,8 @@ while True:
             frame, trans_mat, (width, height))
 
     # 表示
-    cv2.imshow('window', img_tran)
+    cv2.imshow('window', img_trans)
+    rec.write(img_trans)
     plt.scatter(x_t, y_t)
     plt.xlabel('x')
     plt.ylabel('y')
@@ -83,5 +90,6 @@ plt.ylabel('y')
 plt.savefig("results/tragectory.png", dpi=300)
 # plt.show()
 
-cap.release()
 cv2.destroyAllWindows()
+cap.release()
+rec.release()
