@@ -1,3 +1,6 @@
 # MacOS
 .DS_Store
 
+# results
+/results
+/keep_save

@@ -32,12 +32,12 @@ true_coordinates = np.float32(
 
 # 動画を保存
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-rec = cv2.VideoWriter('results/trajectory.mp4', fourcc, 60.0, (width, height))
+rec = cv2.VideoWriter('results/trajectory.mp4', fourcc, 15.0, (width, height))
 
 # 軌道plotデータ
 x_t = []
 y_t = []
-fig = plt.figure()
+fig = plt.figure(figsize=(width // 50, height // 50))
 
 while True:
     ret, frame = cap.read()
@@ -73,12 +73,14 @@ while True:
             frame, trans_mat, (width, height))
 
     # 表示
-    cv2.imshow('window', img_trans)
-    rec.write(img_trans)
+    cv2.imshow('window', cv2.flip(img_trans, 0))  # 上下反転を直す
+    rec.write(cv2.flip(img_trans, 0))
     plt.scatter(x_t, y_t)
     plt.xlabel('x')
     plt.ylabel('y')
-    plt.savefig("results/tragectory.png")
+    plt.xlim(0, width)
+    plt.ylim(0, height)
+    plt.savefig("results/trajectory.png")
 
     # quit
     if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -87,7 +89,9 @@ while True:
 plt.scatter(x_t, y_t)
 plt.xlabel('x')
 plt.ylabel('y')
-plt.savefig("results/tragectory.png", dpi=300)
+plt.xlim(0, width)
+plt.ylim(0, height)
+plt.savefig("results/trajectory.png", dpi=300)
 # plt.show()
 
 cv2.destroyAllWindows()
