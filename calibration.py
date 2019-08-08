@@ -14,7 +14,7 @@ pattern_points *= square_size
 objpoints = []
 imgpoints = []
 
-for fn in glob("calib/*.jpg"):
+for fn in glob("data/calib/*.jpg"):
     # 画像の取得
     gray = cv2.imread(fn, 0)
     print("loading..." + fn)
