@@ -16,8 +16,8 @@ cameraMatrix = np.load('params/mtx.npy')
 distCoeffs = np.load('params/dist.npy')
 
 cap.set(cv2.CAP_PROP_FPS, 10)
-# cap.set(cv2.CAP_PROP_FRAME_WIDTH, 600)
-# cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 600)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 600)
 
 ret, frame = cap.read()
 
@@ -42,9 +42,9 @@ while ret:
         corners, 0.05, cameraMatrix, distCoeffs)
     if ids is not None:
         for i in range(ids.size):
-            print('rvec {}, tvec {}'.format(rvecs[i], tvecs[i]))
-            print('rvecs[{}] {}'.format(i, rvecs[i]))
-            print('tvecs[{}] {}'.format(i, tvecs[i]))
+            # print('rvec {}, tvec {}'.format(rvecs[i], tvecs[i]))
+            # print('rvecs[{}] {}'.format(i, rvecs[i]))
+            # print('tvecs[{}] {}'.format(i, tvecs[i]))
             aruco.drawAxis(frame, cameraMatrix, distCoeffs,
                            rvecs[i], tvecs[i], 0.1)
 
