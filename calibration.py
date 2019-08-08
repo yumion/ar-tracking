@@ -41,5 +41,6 @@ print("mtx = \n", mtx)
 print("dist = ", dist.ravel())
 
 # 計算結果を保存
-np.savetxt("ret.csv", np.array([ret]), delimiter=',', fmt="%0.14f")
-np.savetxt("mtx.csv", mtx, delimiter=',', fmt="%0.14f")
+# np.save("params/ret.npy", np.array([ret]))
+np.save("params/mtx.npy", mtx)
+np.save("params/dist.npy", dist.ravel())
