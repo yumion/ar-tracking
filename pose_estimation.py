@@ -40,10 +40,13 @@ while ret:
     # rvecs, tvecs, _objPoints =   cv.aruco.estimatePoseSingleMarkers( corners, markerLength, cameraMatrix, distCoeffs[, rvecs[, tvecs[, _objPoints]]] )
     rvecs, tvecs, _objPoints = aruco.estimatePoseSingleMarkers(
         corners, 0.05, cameraMatrix, distCoeffs)
+    # print('rvec: {}, \ntvec: {}'.format(rvecs, tvecs))
     if ids is not None:
+        print('---------------------------')
         for i in range(ids.size):
+            print('id: ', ids[i])
             # print('rvec {}, tvec {}'.format(rvecs[i], tvecs[i]))
-            # print('rvecs[{}] {}'.format(i, rvecs[i]))
+            print('rvecs[{}] {}'.format(i, rvecs[i]))
             # print('tvecs[{}] {}'.format(i, tvecs[i]))
             aruco.drawAxis(frame, cameraMatrix, distCoeffs,
                            rvecs[i], tvecs[i], 0.1)

@@ -97,7 +97,6 @@ if __name__ == '__main__':
     myCap = AR(0, 'params/mtx.npy', 'params/dist.npy')
     while True:
         ids = myCap.findARMarker()
-        ids = ids.ravel()
         print('detect id:', ids)
         print(myCap.getDegrees())
         myCap.show()

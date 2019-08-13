@@ -23,6 +23,8 @@ def transPos(trans_mat, target_pos):
 
 
 cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
 
 width = 235
 height = 370
@@ -47,40 +49,43 @@ while True:
     img_marked = aruco.drawDetectedMarkers(frame, corners, ids)
     cv2.imwrite('results/test.png', img_marked)
 
-    # マーカーが映っていないとき
-    if ids is None or ids.size < 5:
-        cv2.imshow('window', frame)
-        continue
+    if ids is None or ids.size < 4:
+        cv2.imshow('window', img_marked)
 
-    if ids.all() is not None and ids.size == 5 and all(ids <= 5):
-        moments = calcMoments(corners, ids)
-        marker_coordinates = np.float32(moments[:4])  # 四隅
-        trans_mat = cv2.getPerspectiveTransform(
-            marker_coordinates, true_coordinates)
-
-        target_pos = moments[4]  # 動くマーカー
-        trans_pos = transPos(trans_mat, target_pos)
-
-        x_t.append(trans_pos[0])
-        y_t.append(trans_pos[1])
-
-        img_marked = aruco.drawDetectedMarkers(frame, corners, ids)
-        img_trans = cv2.warpPerspective(img_marked, trans_mat, (width, height))
     else:
-        x_t.append(None)
-        y_t.append(None)
-        img_trans = cv2.warpPerspective(
-            frame, trans_mat, (width, height))
+        if ids.size == 5 and all(ids <= 5):
+            moments = calcMoments(corners, ids)
+            marker_coordinates = np.float32(moments[:4])  # 四隅
+            trans_mat = cv2.getPerspectiveTransform(
+                marker_coordinates, true_coordinates)
 
-    # 表示
-    cv2.imshow('window', cv2.flip(img_trans, 0))  # 上下反転を直す
-    rec.write(cv2.flip(img_trans, 0))
-    plt.scatter(x_t, y_t)
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.xlim(0, width)
-    plt.ylim(0, height)
-    plt.savefig("results/trajectory.png")
+            target_pos = moments[4]  # 動かすマーカー
+            trans_pos = transPos(trans_mat, target_pos)
+
+            x_t.append(trans_pos[0])
+            y_t.append(trans_pos[1])
+
+            img_marked = aruco.drawDetectedMarkers(frame, corners, ids)
+            img_trans = cv2.warpPerspective(
+                img_marked, trans_mat, (width, height))  # 写像する
+        else:
+            x_t.append(None)
+            y_t.append(None)
+            moments = calcMoments(corners, ids)
+            marker_coordinates = np.float32(moments[:4])  # 四隅
+            trans_mat = cv2.getPerspectiveTransform(
+                marker_coordinates, true_coordinates)
+            img_trans = cv2.warpPerspective(
+                frame, trans_mat, (width, height))
+        # 表示
+        cv2.imshow('window', cv2.flip(img_trans, 0))  # 上下反転を直す
+        rec.write(cv2.flip(img_trans, 0))
+        plt.scatter(x_t, y_t)
+        plt.xlabel('x')
+        plt.ylabel('y')
+        plt.xlim(0, width)
+        plt.ylim(0, height)
+        plt.savefig("results/trajectory.png")
 
     # quit
     if cv2.waitKey(1) & 0xFF == ord('q'):
