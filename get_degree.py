@@ -2,7 +2,7 @@
 import cv2
 import cv2.aruco as aruco
 import numpy as np
-from math import *
+import math
 
 arucoMarkerLength = 0.05
 
@@ -29,6 +29,8 @@ class AR():
         # corners[id0,1,2...][][corner0,1,2,3][x,y]
         aruco.drawDetectedMarkers(
             self.frame, self.corners, self.ids, (0, 255, 0))
+
+        return self.ids
 
     def show(self):
         cv2.imshow("result", self.frame)
@@ -72,13 +74,14 @@ class AR():
     def getDegrees(self):
         if len(self.corners) > 0:
             self.rvec, self.tvec, _ = aruco.estimatePoseSingleMarkers(
-                self.corners[0], arucoMarkerLength, self.cameraMatrix, self.distortionCoefficients)
+                self.corners[0], arucoMarkerLength, self.cameraMatrix, self.distortionCoefficients)  # はじめに検出したマーカーの角度を取得
             self.frame = aruco.drawAxis(
                 self.frame, self.cameraMatrix, self.distortionCoefficients, self.rvec, self.tvec, 0.1)
-            (roll_angle, pitch_angle, yaw_angle) = self.rvec[0][0][0] * 180 / \
-                pi, self.rvec[0][0][1] * 180 / \
-                pi, self.rvec[0][0][2] * 180 / pi
+            roll_angle = self.rvec[0][0][0] * 180 / math.pi
+            pitch_angle = self.rvec[0][0][1] * 180 / math.pi
+            yaw_angle = self.rvec[0][0][2] * 180 / math.pi
             if pitch_angle < 0:
+                # ARマーカーを正面から撮影するとy軸の正負がどっちにあるか判断できないっぽくて、角度の符号がおかしくなるので修正
                 roll_angle, pitch_angle, yaw_angle = -roll_angle, -pitch_angle, -yaw_angle
             return (roll_angle, pitch_angle, yaw_angle)
 
@@ -93,7 +96,9 @@ if __name__ == '__main__':
 
     myCap = AR(0, 'params/mtx.npy', 'params/dist.npy')
     while True:
-        myCap.findARMarker()
+        ids = myCap.findARMarker()
+        ids = ids.ravel()
+        print('detect id:', ids)
         print(myCap.getDegrees())
         myCap.show()
         if cv2.waitKey(1) > 0:

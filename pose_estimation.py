@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*
 import cv2
+from cv2 import aruco
 import numpy as np
 
-aruco = cv2.aruco
 
 # WEBカメラ
 cap = cv2.VideoCapture(0)
