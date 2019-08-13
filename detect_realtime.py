@@ -84,8 +84,8 @@ while True:
             # 軌道を保存
             x_t.append(trans_pos[0])
             y_t.append(trans_pos[1])
-            u_t.append(np.cos(yaw))  # 大きさ1とした時のx成分
-            v_t.append(np.sin(yaw))  # 大きさ1とした時のy成分
+            u_t.append(20 * np.cos(np.abs(yaw)))  # 大きさ1とした時のx成分
+            v_t.append(20 * np.sin(np.abs(yaw)))  # 大きさ1とした時のy成分
 
             img_marked = aruco.drawDetectedMarkers(
                 frame, corners, ids)  # マーカーの枠を描画
@@ -94,10 +94,10 @@ while True:
             img_trans = cv2.warpPerspective(
                 img_marked, trans_mat, (width, height))  # 射影変換
         else:
-            x_t.append(None)
-            y_t.append(None)
-            u_t.append(None)
-            v_t.append(None)
+            # x_t.append(None)
+            # y_t.append(None)
+            # u_t.append(None)
+            # v_t.append(None)
             # 射影変換
             if trans_mat is None:
                 moments = calcMoments(corners, ids)
@@ -110,8 +110,9 @@ while True:
         cv2.imshow('window', cv2.flip(img_trans, 0))  # 上下反転を直す
         rec.write(cv2.flip(img_trans, 0))
         # plot
-        plt.scatter(x_t, y_t)
-        # plt.quiver(x_t, y_t, u_t, v_t, angles='xy', scale_units='xy', scale=1)
+        plt.scatter(x_t, y_t, c='blue')
+        plt.quiver(x_t, y_t, u_t, v_t, angles='xy', scale_units='xy',
+                   scale=10, color='blue', alpha=0.5, width=0.01)
         plt.xlabel('x')
         plt.ylabel('y')
         plt.xlim(0, width)
@@ -122,8 +123,9 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-plt.scatter(x_t, y_t)
-plt.quiver(x_t, y_t, u_t, v_t, angles='xy', scale_units='xy', scale=1)
+plt.scatter(x_t, y_t, c='blue')
+plt.quiver(x_t, y_t, u_t, v_t, angles='xy', scale_units='xy',
+           scale=1, color='blue', alpha=0.5, width=0.005)
 plt.xlabel('x')
 plt.ylabel('y')
 plt.xlim(0, width)
